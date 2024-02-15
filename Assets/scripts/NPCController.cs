@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class GravityManager : MonoBehaviour
+public class NPCController : MonoBehaviour
 {
     
     public Transform gravityTarget;
@@ -18,15 +20,25 @@ public class GravityManager : MonoBehaviour
     public float autoOrientSpeed = 5f;
 
     public bool isMining = false;
-    
-    
+
+    private TextMeshPro carry;
     
     void Start()
     {
+        carry = GetComponentInChildren<TextMeshPro>();
         rb = GetComponent<Rigidbody>();
+        
     }
 
     // Update is called once per frame
+
+    private void Update()
+    {
+        carry.transform.LookAt(Camera.main.transform);
+        carry.transform.Rotate(0, 180, 0);
+        
+    }
+
     void FixedUpdate()
     {
         
@@ -76,7 +88,7 @@ public class GravityManager : MonoBehaviour
         // Apply a constant force towards the target
         rb.AddForce(normalizedDirection * power);
         
-        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.None;
             
         
         gameObject.GetComponent<Transform>().LookAt(moveToTarget);
