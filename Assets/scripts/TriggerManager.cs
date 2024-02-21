@@ -13,9 +13,13 @@ public class TriggerManager : MonoBehaviour
     [SerializeField] private int mineStrength;
     [SerializeField] TextMeshProUGUI MoneyUI;
     private CollectionManager collectionManager;
-    
+   // private DirectionSetter directionSetter;
+
+    public bool cycleFinished;
     void Start()
     {
+        //directionSetter = GetComponentInParent<GameObject>().GetComponentInChildren<DirectionSetter>();
+        
         collectionManager = GameObject.Find("Base").GetComponent<CollectionManager>();
         Base = GameObject.Find("Base").GetComponent<Transform>();
        
@@ -24,8 +28,11 @@ public class TriggerManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        NPCController gravityManager = other.GetComponent<NPCController>();
+        
         if (other.CompareTag("Player"))
         {
+            gravityManager.cycleFinished = false;
             carry = other.GetComponentInChildren<TextMeshPro>();
             PerformAction(other);
             
@@ -40,6 +47,8 @@ public class TriggerManager : MonoBehaviour
         NPCController gravityManager = other.GetComponent<NPCController>();
         Animator animator = other.GetComponentInChildren<Animator>();
 
+       
+        
         if (gravityManager != null && animator != null)
         {
             gravityManager.isMining = true;
@@ -52,11 +61,11 @@ public class TriggerManager : MonoBehaviour
                 gravityManager.moveToTarget = Target;
 
                 
-            }));
+            }, gravityManager));
         }
     }
 
-    IEnumerator IncreaseNumber(System.Action onCompletion)
+    IEnumerator IncreaseNumber(System.Action onCompletion, NPCController npc)
     {
         if (isResource)
         {
@@ -79,6 +88,7 @@ public class TriggerManager : MonoBehaviour
             StartCoroutine(SpawnAndFade());
             collectionManager.Money += 100;
             MoneyUI.SetText(collectionManager.Money + "$");
+            npc.cycleFinished = true;
         }
         
         onCompletion?.Invoke();

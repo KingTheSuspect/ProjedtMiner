@@ -6,25 +6,35 @@ using UnityEngine;
 
 public class NPCController : MonoBehaviour
 {
+    [SerializeField] public List<DirectionSetter> Resources = new List<DirectionSetter>() ;
     
     public Transform gravityTarget;
     
     public Transform moveToTarget;
 
-    public float power = 15000f;
+    public float power = 50000f;
     public float torque = 500f;
 
     public float gravity = 9.81f;
     private Rigidbody rb;
 
-    public float autoOrientSpeed = 5f;
+    public float autoOrientSpeed = 15f;
 
     public bool isMining = false;
 
     private TextMeshPro carry;
+
+    private DirectionSetter Resource;
     
+    public Animator anim;
+    
+    public bool cycleFinished;
+    
+    public bool ResourcesSet;
     void Start()
     {
+        //Resource = GameObject.Find("Resource").GetComponentInChildren<DirectionSetter>();
+        anim = GetComponentInChildren<Animator>();
         carry = GetComponentInChildren<TextMeshPro>();
         rb = GetComponent<Rigidbody>();
         
@@ -34,6 +44,7 @@ public class NPCController : MonoBehaviour
 
     private void Update()
     {
+        
         carry.transform.LookAt(Camera.main.transform);
         carry.transform.Rotate(0, 180, 0);
         
@@ -44,12 +55,24 @@ public class NPCController : MonoBehaviour
         
         ProccessGravity();
         
-        if (!isMining)
+        if(cycleFinished) // if cycle is finished, reset the animation to Idle
         {
-            MoveTowardsTarget();
-        
+            Resource.isClicked = false;
+            anim.SetBool("direction", false);
+            cycleFinished = false;
         }
-        else
+        
+       
+        if (!isMining && Resource != null && Resource.isClicked) //move to resource
+        {
+            anim.SetBool("direction", true);
+            MoveTowardsTarget();
+            
+
+        }
+        
+        
+        else //if mining, stop moving
         {
             
             rb.velocity = Vector3.zero;
@@ -93,12 +116,26 @@ public class NPCController : MonoBehaviour
         
         gameObject.GetComponent<Transform>().LookAt(moveToTarget);
        
-        float stoppingDistance = 1.3f;
+       
         
        
     }
 
+    void OnEnable()
+    {
+        DirectionSetter.OnClicked += HandleDirectionSetterClicked;
+    }
 
+    void OnDisable()
+    {
+        DirectionSetter.OnClicked -= HandleDirectionSetterClicked;
+    }
+
+    void HandleDirectionSetterClicked(DirectionSetter directionSetter)
+{
+    Resource = directionSetter;
+    moveToTarget = Resource.transform.parent.GetComponentInChildren<TriggerManager>().transform;
+}
 
 
     
