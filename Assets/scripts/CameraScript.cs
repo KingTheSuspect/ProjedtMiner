@@ -12,7 +12,9 @@ public class CameraOrbit : MonoBehaviour
     private Vector3 swipeVelocity;
     private bool isMouseDragging = false;
     private bool isZooming = false;
-
+    
+    private float orthoZoomSpeed = 0.1f;
+    private float perspectiveZoomSpeed = 0.1f;
     void Update()
     {
         // Check for mouse input
@@ -42,20 +44,43 @@ public class CameraOrbit : MonoBehaviour
             StartCoroutine(ApplyMomentumCoroutine());
         }
         
+        
         if (Input.touchCount == 2)
         {
-            Touch touch0 = Input.GetTouch(0);
-            Touch touch1 = Input.GetTouch(1);
+                // Store both touches.
+                Touch touchZero = Input.GetTouch(0);
+                Touch touchOne = Input.GetTouch(1);
 
-            // Calculate pinch zoom
-            float pinchZoomDelta = Vector2.Distance(touch0.position, touch1.position) -
-                                   Vector2.Distance(touch0.position - touch0.deltaPosition, touch1.position - touch1.deltaPosition);
+                // Find the position in the previous frame of each touch.
+                Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+                Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
 
-            if (Mathf.Abs(pinchZoomDelta) > 0.0f)
-            {
-                HandlePinchZoom(pinchZoomDelta * pinchZoomSpeed);
-            }
+                // Find the magnitude of the vector (the distance) between the touches in each frame.
+                float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+                float touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
+
+                // Find the difference in the distances between each frame.
+                float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+
+                // If the camera is orthographic...
+                if (Camera.main.orthographic)
+                {
+                    // ... change the orthographic size based on the change in distance between the touches.
+                    Camera.main.orthographicSize += deltaMagnitudeDiff * orthoZoomSpeed;
+
+                    // Make sure the orthographic size never drops below zero.
+                    Camera.main.orthographicSize = Mathf.Max(Camera.main.orthographicSize, 0.1f);
+                }
+                else
+                {
+                    // Otherwise change the field of view based on the change in distance between the touches.
+                    Camera.main.fieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
+
+                    // Clamp the field of view to make sure it's between 0 and 180.
+                    Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, 0.1f, 179.9f);
+                }
         }
+        
         
 
         // Simulate pinch zoom with scroll wheel
