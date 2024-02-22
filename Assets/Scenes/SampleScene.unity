@@ -285,7 +285,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Special Ore: 0
+  m_text: 'Rare Ore: 0
 
 '
   m_isRightToLeft: 0
@@ -1082,7 +1082,7 @@ MonoBehaviour:
   - {fileID: 303117441}
   - {fileID: 2069483942}
   gravityTarget: {fileID: 138438328}
-  moveToTarget: {fileID: 1766817390}
+  moveToTarget: {fileID: 0}
   power: 50000
   torque: 500
   gravity: 9.81
@@ -1147,10 +1147,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6896489039490945008, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 8380891068537268825, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
       propertyPath: MoneyUI
       value: 
       objectReference: {fileID: 1405361744}
+    - target: {fileID: 8380891068537268825, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
+      propertyPath: RareOreUI
+      value: 
+      objectReference: {fileID: 139802888}
     - target: {fileID: 8380891068537268825, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
       propertyPath: moneyAdded
       value: 
@@ -1432,10 +1440,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 196.347
       objectReference: {fileID: 0}
+    - target: {fileID: 6896489039490945008, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 8380891068537268825, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
       propertyPath: MoneyUI
       value: 
       objectReference: {fileID: 1405361744}
+    - target: {fileID: 8380891068537268825, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
+      propertyPath: RareOreUI
+      value: 
+      objectReference: {fileID: 139802888}
     - target: {fileID: 8380891068537268825, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
       propertyPath: moneyAdded
       value: 
@@ -1471,6 +1487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseText: {fileID: 0}
   Money: 0
+  Rare_ore: 0
 --- !u!1 &1712009945
 GameObject:
   m_ObjectHideFlags: 0
@@ -1574,11 +1591,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!4 &1766817390 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5120781863090362110, guid: 7d703e392ea322d4ab6dd4fe427285ca, type: 3}
-  m_PrefabInstance: {fileID: 998770109}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1850428426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1615,6 +1627,7 @@ MonoBehaviour:
   moneyAdded: {fileID: 7608144816469948251, guid: 7a25e50566c20274a87090e33d373cbf, type: 3}
   mineStrength: 0
   MoneyUI: {fileID: 1405361744}
+  RareOreUI: {fileID: 0}
   cycleFinished: 0
 --- !u!65 &1850428428
 BoxCollider:
@@ -1629,7 +1642,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0

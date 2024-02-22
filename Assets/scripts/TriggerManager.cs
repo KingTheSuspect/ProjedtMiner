@@ -1,7 +1,8 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-
+using System;
+using Random = UnityEngine.Random;
 
 public class TriggerManager : MonoBehaviour
 {
@@ -12,18 +13,19 @@ public class TriggerManager : MonoBehaviour
     private Transform Base;
     [SerializeField] private int mineStrength;
     [SerializeField] TextMeshProUGUI MoneyUI;
+    [SerializeField] TextMeshProUGUI RareOreUI;
     private CollectionManager collectionManager;
    // private DirectionSetter directionSetter;
 
     public bool cycleFinished;
     void Start()
     {
-        //directionSetter = GetComponentInParent<GameObject>().GetComponentInChildren<DirectionSetter>();
+        
         
         collectionManager = GameObject.Find("Base").GetComponent<CollectionManager>();
         Base = GameObject.Find("Base").GetComponent<Transform>();
        
-        Target = isResource ? GameObject.Find("baseTrigger").GetComponent<Transform>() : GameObject.Find("mineTrigger").GetComponent<Transform>();
+       // Target = isResource ?  : GameObject.Find("mineTrigger").GetComponent<Transform>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -67,14 +69,25 @@ public class TriggerManager : MonoBehaviour
 
     IEnumerator IncreaseNumber(System.Action onCompletion, NPCController npc)
     {
+        
         if (isResource)
         {
             for (int i = 1; i <= 20; i++)
             {
+                int num = Random.Range(1, 100);
+                
+                if(num > 95)
+                {
+                    collectionManager.Rare_ore += 1;
+                    RareOreUI.SetText("Rare ore: " + collectionManager.Rare_ore);
+                }
+                
                 carry.SetText(i + "/20");
 
                 yield return new WaitForSeconds(1f / mineStrength); 
             }
+
+            Target = GameObject.Find("baseTrigger").GetComponent<Transform>();
         }
         else
         {
@@ -88,6 +101,7 @@ public class TriggerManager : MonoBehaviour
             StartCoroutine(SpawnAndFade());
             collectionManager.Money += 100;
             MoneyUI.SetText(collectionManager.Money + "$");
+            
             npc.cycleFinished = true;
         }
         

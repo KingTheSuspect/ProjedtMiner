@@ -102,23 +102,22 @@ public class NPCController : MonoBehaviour
     
     void MoveTowardsTarget()
     {
-        
-        Vector3 targetDirection = moveToTarget.position - transform.position;
+        Vector3 gravityDirection = (gravityTarget.position - transform.position).normalized;
 
-        // Normalize the direction to get a unit vector
-        Vector3 normalizedDirection = targetDirection.normalized;
+        // Calculate the direction from the object to the target
+        Vector3 targetDirection = (moveToTarget.position - transform.position).normalized;
 
-        // Apply a constant force towards the target
-        rb.AddForce(normalizedDirection * power);
-        
+        // Project the target direction onto the plane that's perpendicular to the gravity direction
+        Vector3 forwardDirection = Vector3.ProjectOnPlane(targetDirection, gravityDirection).normalized;
+
+        // Move the object along the forward direction
+        transform.Translate(forwardDirection * 6 * Time.deltaTime, Space.World);
         rb.constraints = RigidbodyConstraints.None;
-            
         
-        gameObject.GetComponent<Transform>().LookAt(moveToTarget);
-       
-       
+        // Look at the target
+        transform.LookAt(moveToTarget);
+
         
-       
     }
 
     void OnEnable()
@@ -132,10 +131,10 @@ public class NPCController : MonoBehaviour
     }
 
     void HandleDirectionSetterClicked(DirectionSetter directionSetter)
-{
+    {
     Resource = directionSetter;
     moveToTarget = Resource.transform.parent.GetComponentInChildren<TriggerManager>().transform;
-}
+    }
 
 
     

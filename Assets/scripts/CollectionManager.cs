@@ -7,6 +7,7 @@ public class CollectionManager : MonoBehaviour
 {
     public TextMeshPro BaseText;
     public int Money = 0;
+    public int Rare_ore = 0;
     void Start()
     {
         BaseText = GetComponentInChildren<TextMeshPro>();
