@@ -15,9 +15,9 @@ public class TriggerManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI MoneyUI;
     [SerializeField] TextMeshProUGUI RareOreUI;
     private CollectionManager collectionManager;
-   // private DirectionSetter directionSetter;
+  
 
-    public bool cycleFinished;
+    
     void Start()
     {
         
@@ -25,49 +25,50 @@ public class TriggerManager : MonoBehaviour
         collectionManager = GameObject.Find("Base").GetComponent<CollectionManager>();
         Base = GameObject.Find("Base").GetComponent<Transform>();
        
-       // Target = isResource ?  : GameObject.Find("mineTrigger").GetComponent<Transform>();
+       
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         NPCController gravityManager = other.GetComponent<NPCController>();
-        
-        if (other.CompareTag("Player"))
+    
+        if (other.CompareTag("Player") && isResource) //resource trigger
         {
             gravityManager.cycleFinished = false;
-            carry = other.GetComponentInChildren<TextMeshPro>();
-            PerformAction(other);
+            TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
+            StartCoroutine(PerformAction(other, carry));
+        }
+        else if (other.CompareTag("Player") && !isResource) //base trigger
+        {
+            TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
+            if(carry.text == "0/20") return;
             
-                
+            gravityManager.cycleFinished = false;
+            StartCoroutine(PerformAction(other, carry));
         }
     }
 
-    
-
-    void PerformAction(Collider other)
+    IEnumerator PerformAction(Collider other, TextMeshPro carryText)
     {
         NPCController gravityManager = other.GetComponent<NPCController>();
         Animator animator = other.GetComponentInChildren<Animator>();
 
-       
-        
         if (gravityManager != null && animator != null)
         {
             gravityManager.isMining = true;
             animator.SetBool("mine", true);
 
-            StartCoroutine(IncreaseNumber(() =>
+            yield return StartCoroutine(IncreaseNumber(() =>
             {
                 gravityManager.isMining = false;
                 animator.SetBool("mine", false);
                 gravityManager.moveToTarget = Target;
 
-                
-            }, gravityManager));
+            }, gravityManager, carryText));
         }
     }
 
-    IEnumerator IncreaseNumber(System.Action onCompletion, NPCController npc)
+    IEnumerator IncreaseNumber(System.Action onCompletion, NPCController npc, TextMeshPro carryText)
     {
         
         if (isResource)
@@ -82,18 +83,19 @@ public class TriggerManager : MonoBehaviour
                     RareOreUI.SetText("Rare ore: " + collectionManager.Rare_ore);
                 }
                 
-                carry.SetText(i + "/20");
+                carryText.SetText(i + "/20");
 
                 yield return new WaitForSeconds(1f / mineStrength); 
             }
 
             Target = GameObject.Find("baseTrigger").GetComponent<Transform>();
+            npc.isMoving = false;
         }
         else
         {
             for (int i = 20; i >= 0; i--)
             {
-                carry.SetText(i + "/20");
+                carryText.SetText(i + "/20");
 
                 yield return new WaitForSeconds(0.2f); 
             }
@@ -103,6 +105,7 @@ public class TriggerManager : MonoBehaviour
             MoneyUI.SetText(collectionManager.Money + "$");
             
             npc.cycleFinished = true;
+            npc.isMoving = false;
         }
         
         onCompletion?.Invoke();

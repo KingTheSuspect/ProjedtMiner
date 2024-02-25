@@ -8,7 +8,7 @@ public class NPCController : MonoBehaviour
 {
     [SerializeField] public List<DirectionSetter> Resources = new List<DirectionSetter>() ;
     
-    public Transform gravityTarget;
+    private Transform gravityTarget;
     
     public Transform moveToTarget;
 
@@ -30,10 +30,12 @@ public class NPCController : MonoBehaviour
     
     public bool cycleFinished;
     
-    public bool ResourcesSet;
+    public bool isMoving = false;
+    
+    public bool isInsideTrigger = false;
     void Start()
     {
-        //Resource = GameObject.Find("Resource").GetComponentInChildren<DirectionSetter>();
+        gravityTarget = GameObject.Find("Sphere").GetComponent<Transform>();
         anim = GetComponentInChildren<Animator>();
         carry = GetComponentInChildren<TextMeshPro>();
         rb = GetComponent<Rigidbody>();
@@ -113,11 +115,12 @@ public class NPCController : MonoBehaviour
         // Move the object along the forward direction
         transform.Translate(forwardDirection * 6 * Time.deltaTime, Space.World);
         rb.constraints = RigidbodyConstraints.None;
-        
-        // Look at the target
-        transform.LookAt(moveToTarget);
 
-        
+        // Look at the target
+        Quaternion targetRotation = Quaternion.LookRotation(forwardDirection, -gravityDirection);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientSpeed);
+
+        isMoving = true;
     }
 
     void OnEnable()
@@ -132,8 +135,12 @@ public class NPCController : MonoBehaviour
 
     void HandleDirectionSetterClicked(DirectionSetter directionSetter)
     {
-    Resource = directionSetter;
-    moveToTarget = Resource.transform.parent.GetComponentInChildren<TriggerManager>().transform;
+        if (!isMoving)
+        {
+            Resource = directionSetter;
+            moveToTarget = Resource.transform.parent.GetComponentInChildren<TriggerManager>().transform;
+        }
+        
     }
 
 

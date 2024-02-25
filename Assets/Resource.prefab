@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8904006310358974330}
   - component: {fileID: 6896489039490945008}
   - component: {fileID: 8380891068537268825}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: mineTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 1278913989535281306}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 2, z: 2}
+  m_LocalPosition: {x: 0.02, y: -0.06, z: 2.01}
+  m_LocalScale: {x: 3.378273, y: 2, z: 3.1398883}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4659929218302752885}
@@ -50,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1278913989535281306}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -98,7 +98,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -122,7 +122,7 @@ MonoBehaviour:
   moneyAdded: {fileID: 0}
   mineStrength: 5
   MoneyUI: {fileID: 0}
-  cycleFinished: 0
+  RareOreUI: {fileID: 0}
 --- !u!1 &1452818776305515392
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,6 +135,8 @@ GameObject:
   - component: {fileID: 3621312068760451280}
   - component: {fileID: 6889109532664613031}
   - component: {fileID: 586201084055759019}
+  - component: {fileID: 5857226068606332145}
+  - component: {fileID: 1174732157584886969}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -228,6 +230,32 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5857226068606332145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1452818776305515392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a2f8e4d3095e548b10cf95d2577f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isClicked: 0
+--- !u!114 &1174732157584886969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1452818776305515392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a2f8e4d3095e548b10cf95d2577f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isClicked: 0
 --- !u!1 &2204796535049656840
 GameObject:
   m_ObjectHideFlags: 0
