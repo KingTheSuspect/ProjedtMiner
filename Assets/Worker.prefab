@@ -182,11 +182,11 @@ GameObject:
   - component: {fileID: 874102879070290401}
   - component: {fileID: 1161586768435168338}
   - component: {fileID: 8324361996033112633}
-  - component: {fileID: 7881339518242230434}
   - component: {fileID: 2328230142628884408}
   - component: {fileID: 4785174162454955235}
-  m_Layer: 0
-  m_Name: Player
+  - component: {fileID: 4655871855592170447}
+  m_Layer: 7
+  m_Name: Worker
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -259,27 +259,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7881339518242230434
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7399516901706232553}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2328230142628884408
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -319,10 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d02d2d1851ff6c4ba81e93a1eda1a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resources:
-  - {fileID: 0}
-  - {fileID: 0}
-  gravityTarget: {fileID: 0}
+  Resources: []
   moveToTarget: {fileID: 0}
   power: 50000
   torque: 500
@@ -331,7 +307,31 @@ MonoBehaviour:
   isMining: 0
   anim: {fileID: 0}
   cycleFinished: 0
-  ResourcesSet: 0
+  isMoving: 0
+  isInsideTrigger: 0
+--- !u!136 &4655871855592170447
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7399516901706232553}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1001 &2642369269742339846
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -31,20 +31,25 @@ public class TriggerManager : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         NPCController gravityManager = other.GetComponent<NPCController>();
-    
-        if (other.CompareTag("Player") && isResource) //resource trigger
+
+        if (other.CompareTag("Player") && !gravityManager.isMining)
         {
-            gravityManager.cycleFinished = false;
-            TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
-            StartCoroutine(PerformAction(other, carry));
-        }
-        else if (other.CompareTag("Player") && !isResource) //base trigger
-        {
-            TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
-            if(carry.text == "0/20") return;
-            
-            gravityManager.cycleFinished = false;
-            StartCoroutine(PerformAction(other, carry));
+            if (isResource) //resource trigger
+            {
+                TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
+                if(carry.text == "20/20") return;
+                
+                gravityManager.cycleFinished = false;
+                StartCoroutine(PerformAction(other, carry));
+            }
+            else //base trigger
+            {
+                TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
+                if(carry.text == "0/20") return;
+
+                gravityManager.cycleFinished = false;
+                StartCoroutine(PerformAction(other, carry));
+            }
         }
     }
 
