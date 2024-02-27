@@ -37,10 +37,12 @@ public class TriggerManager : MonoBehaviour
             if (isResource) //resource trigger
             {
                 TextMeshPro carry = other.GetComponentInChildren<TextMeshPro>();
+                
                 if (carry.text == "20/20")
                 {
                     gravityManager.moveToTarget = Base; // Set the target to the base or any other target
                     gravityManager.isMoving = true; // Start moving the NPC towards the target
+                    Debug.Log("Carry is full! Moving to base.");
                     return;
                 }
                 
@@ -97,9 +99,10 @@ public class TriggerManager : MonoBehaviour
 
                 yield return new WaitForSeconds(1f / mineStrength); 
             }
-
+            
             Target = GameObject.Find("baseTrigger").GetComponent<Transform>();
-            npc.isMoving = false;
+            //Debug.Log(npc.name + " is moving");
+            npc.isMoving = true;
         }
         else
         {

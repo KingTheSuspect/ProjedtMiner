@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class DirectionSetter : MonoBehaviour
@@ -14,18 +15,30 @@ public class DirectionSetter : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            
+        
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.gameObject == gameObject)
                 {
                     isClicked = true;
-                    Debug.Log("Clicked");
+                   
 
                     // Raise the OnClicked event
                     OnClicked?.Invoke(this);
+
+                    // Start the ResetIsClicked coroutine
+                    StartCoroutine(ResetIsClicked());
                 }
             }
         }
+    }
+
+    IEnumerator ResetIsClicked()
+    {
+        // Wait for 1 second
+        yield return new WaitForSeconds(1f);
+
+        // Reset isClicked to false
+        isClicked = false;
     }
 }

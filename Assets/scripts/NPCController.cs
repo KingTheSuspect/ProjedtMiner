@@ -32,7 +32,7 @@ public class NPCController : MonoBehaviour
     
     public bool isMoving = false;
     
-    public bool isInsideTrigger = false;
+    public bool npcIsClicked = false;
     void Start()
     {
         gravityTarget = GameObject.Find("Sphere").GetComponent<Transform>();
@@ -50,6 +50,11 @@ public class NPCController : MonoBehaviour
         carry.transform.LookAt(Camera.main.transform);
         carry.transform.Rotate(0, 180, 0);
         
+        if (Resource != null && Resource.isClicked)
+        {
+            npcIsClicked = true;
+            
+        }
     }
 
     void FixedUpdate()
@@ -59,13 +64,13 @@ public class NPCController : MonoBehaviour
         
         if(cycleFinished) // if cycle is finished, reset the animation to Idle
         {
-            Resource.isClicked = false;
+            npcIsClicked = false;
             anim.SetBool("direction", false);
             cycleFinished = false;
         }
         
        
-        if (!isMining && Resource != null && Resource.isClicked) //move to resource
+        if (!isMining && npcIsClicked) //move to resource
         {
             anim.SetBool("direction", true);
             MoveTowardsTarget();
@@ -74,7 +79,7 @@ public class NPCController : MonoBehaviour
         }
         
         
-        else //if mining, stop moving
+        else
         {
             
             rb.velocity = Vector3.zero;
@@ -119,7 +124,7 @@ public class NPCController : MonoBehaviour
         // Look at the target
         Quaternion targetRotation = Quaternion.LookRotation(forwardDirection, -gravityDirection);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientSpeed);
-
+       
         isMoving = true;
     }
 
