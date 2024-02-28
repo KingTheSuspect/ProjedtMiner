@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class MangerController : MonoBehaviour
+public class ManagerController : MonoBehaviour
 {
     private Transform gravityTarget;
     
@@ -38,6 +39,7 @@ public class MangerController : MonoBehaviour
     public List<GameObject> npcObjectsList;
     void Start()
     {
+        sp = GameObject.Find("spawnObject").GetComponent<spawnPoint>();
         
         resourceObjects = GameObject.FindGameObjectsWithTag("Resource");
         
@@ -46,35 +48,93 @@ public class MangerController : MonoBehaviour
         npcObjectsList = new List<GameObject>(npcObjects);
         
         gravityTarget = GameObject.Find("Sphere").GetComponent<Transform>();
-       // anim = GetComponentInChildren<Animator>();
-        //cooldown = GetComponentInChildren<TextMeshPro>();
-        
-        
-        
+
+        anim = GetComponentInChildren<Animator>();
+
+
     }
+
+    private void FixedUpdate()
+    {
+        ProccessGravity();
+    }
+
+    void ProccessGravity()
+    {
+        var position = transform.position;
+        Vector3 diff = position - gravityTarget.position;
+        rb.AddForce(- diff.normalized * (gravity * rb.mass));
+        Debug.DrawRay(position, diff.normalized, Color.red);
+        
+        autoOrient(-diff);
+    }
+
+    void autoOrient(Vector3 down)
+    {
+        var rotation = transform.rotation;
+        Quaternion orientationDirection = Quaternion.FromToRotation(-transform.up, down) * rotation;
+        rotation = Quaternion.Slerp(rotation, orientationDirection, autoOrientSpeed * Time.deltaTime);
+        transform.rotation = rotation;
+    }
+    
+    void MoveTowardsTarget()
+    {
+        Vector3 gravityDirection = (gravityTarget.position - transform.position).normalized;
+
+        // Calculate the direction from the object to the target
+        Vector3 targetDirection = (moveToTarget.position - transform.position).normalized;
+
+        // Project the target direction onto the plane that's perpendicular to the gravity direction
+        Vector3 forwardDirection = Vector3.ProjectOnPlane(targetDirection, gravityDirection).normalized;
+
+        // Move the object along the forward direction
+        transform.Translate(forwardDirection * 6 * Time.deltaTime, Space.World);
+        rb.constraints = RigidbodyConstraints.None;
+
+        // Look at the target
+        Quaternion targetRotation = Quaternion.LookRotation(forwardDirection, -gravityDirection);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * autoOrientSpeed);
+       
+        isMoving = true;
+    }
+    
     
     private void OnEnable()
     {
-        // Subscribe to the OnResourceCreated event
         spawnPoint.OnNpcCreated += UpdateNpcList;
+        NPCController.OnCycleFinished += AssignRandomTargetToNPC;
+        
     }
 
     private void OnDisable()
     {
-        // Unsubscribe from the OnResourceCreated event
         spawnPoint.OnNpcCreated -= UpdateNpcList;
+        NPCController.OnCycleFinished -= AssignRandomTargetToNPC;
     }
 
     private void UpdateNpcList()
     {
-        
-        npcObjects = GameObject.FindGameObjectsWithTag("Player");
-        this.npcObjectsList = new List<GameObject>(npcObjects);
+        StartCoroutine(DelayedUpdate());
+    }
 
-        foreach (var obj in npcObjectsList )
+    private IEnumerator DelayedUpdate()
+    {
+        // Wait until next frame
+        yield return null;
+
+        npcObjects = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (var obj in npcObjects)
         {
             Debug.Log(obj.name);
+            obj.GetComponent<NPCController>().mode = false;
         }
+    }
+    
+    private void AssignRandomTargetToNPC(NPCController npc)
+    {
+        int i = UnityEngine.Random.Range(0, resourceObjects.Length);
+        npc.moveToTarget = resourceObjects[i].transform.parent.GetComponentInChildren<TriggerManager>().transform;
     }
     
     

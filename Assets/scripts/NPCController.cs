@@ -33,14 +33,18 @@ public class NPCController : MonoBehaviour
     
     public bool npcIsClicked = false;
 
-    public bool mode = true;
+    public bool mode;
+    
+    private bool initialCycleFinishedSet = false;
+    
+    public static event Action<NPCController> OnCycleFinished;
     void Start()
     {
         gravityTarget = GameObject.Find("Sphere").GetComponent<Transform>();
         anim = GetComponentInChildren<Animator>();
         carry = GetComponentInChildren<TextMeshPro>();
         rb = GetComponent<Rigidbody>();
-        
+        mode = true;
     }
 
     // Update is called once per frame
@@ -58,37 +62,56 @@ public class NPCController : MonoBehaviour
         }
     }
 
+    
+
     void FixedUpdate()
     {
-        
         ProccessGravity();
-        
-        if(cycleFinished) // if cycle is finished, reset the animation to Idle
+
+        if (mode) // Manual mode, no Manager
         {
-            npcIsClicked = false;
-            anim.SetBool("direction", false);
-            cycleFinished = false;
+            if (cycleFinished) // if cycle is finished, reset the animation to Idle
+            {
+                npcIsClicked = false;
+                anim.SetBool("direction", false);
+                cycleFinished = false;
+            }
+
+            if (!isMining && npcIsClicked) // move to resource
+            {
+                anim.SetBool("direction", true);
+                MoveTowardsTarget();
+            }
+            else
+            {
+                rb.velocity = Vector3.zero;
+                rb.constraints = RigidbodyConstraints.FreezeAll;
+            }
         }
-        
-       
-        if (!isMining && npcIsClicked) //move to resource
+        else // Manager mode
         {
-            anim.SetBool("direction", true);
-            MoveTowardsTarget();
+            if (cycleFinished || !initialCycleFinishedSet)
+            {
+                anim.SetBool("direction", false);
+                OnCycleFinished?.Invoke(this);
+                cycleFinished = false;
+
+                // Set the boolean to true to indicate that initial cycleFinished is set
+                initialCycleFinishedSet = true;
+            }
+            else if (!isMining)
+            {
+                anim.SetBool("direction", true);
+                MoveTowardsTarget();
+            }
+            else
+            {
+                rb.velocity = Vector3.zero;
+                rb.constraints = RigidbodyConstraints.FreezeAll;
+            }
         }
-        
-        
-        else
-        {
-            
-            rb.velocity = Vector3.zero;
-            
-            rb.constraints = RigidbodyConstraints.FreezeAll;
-        }
-        
-        
-       
     }
+
     
     
     
