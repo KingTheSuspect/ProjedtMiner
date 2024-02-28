@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class NPCController : MonoBehaviour
 {
-    [SerializeField] public List<DirectionSetter> Resources = new List<DirectionSetter>() ;
     
     private Transform gravityTarget;
     
@@ -33,6 +32,8 @@ public class NPCController : MonoBehaviour
     public bool isMoving = false;
     
     public bool npcIsClicked = false;
+
+    public bool mode = true;
     void Start()
     {
         gravityTarget = GameObject.Find("Sphere").GetComponent<Transform>();
@@ -74,8 +75,6 @@ public class NPCController : MonoBehaviour
         {
             anim.SetBool("direction", true);
             MoveTowardsTarget();
-            
-
         }
         
         
@@ -86,7 +85,12 @@ public class NPCController : MonoBehaviour
             
             rb.constraints = RigidbodyConstraints.FreezeAll;
         }
+        
+        
+       
     }
+    
+    
     
 
     void ProccessGravity()
